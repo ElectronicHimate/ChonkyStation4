@@ -14,9 +14,12 @@ void init(Module& module) {
     module.addSymbolExport("-RJWNMK3fC8", "scePlayGoGetProgress", "libScePlayGo", "libScePlayGo", (void*)&scePlayGoGetProgress);
     module.addSymbolExport("Nn7zKwnA5q0", "scePlayGoGetToDoList", "libScePlayGo", "libScePlayGo", (void*)&scePlayGoGetToDoList);
     
+    module.addSymbolStub("73fF1MFU8hA", "scePlayGoGetChunkId", "libScePlayGo", "libScePlayGo");
+    module.addSymbolStub("-Q1-u1a7p0g", "scePlayGoPrefetch", "libScePlayGo", "libScePlayGo");
     module.addSymbolStub("LosLlHOpNqQ", "scePlayGoSetLanguageMask", "libScePlayGo", "libScePlayGo");
     module.addSymbolStub("gUPGiOQ1tmQ", "scePlayGoSetToDoList", "libScePlayGo", "libScePlayGo");
     module.addSymbolStub("4AAcTU9R3XM", "scePlayGoSetInstallSpeed", "libScePlayGo", "libScePlayGo");
+    module.addSymbolStub("rvBSfTimejE", "scePlayGoGetInstallSpeed", "libScePlayGo", "libScePlayGo");
 }
 
 ScePlayGoInitParams param;

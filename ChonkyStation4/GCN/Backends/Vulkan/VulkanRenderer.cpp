@@ -416,7 +416,7 @@ vk::Extent2D last_extent = vk::Extent2D { 0xffffffff, 0xffffffff };
 std::vector<vk::RenderingAttachmentInfo> curr_attachments;
 bool has_feedback_loop = false;
 bool needs_new_render_pass = false;
-vk::Extent2D VulkanRenderer::setupRenderingAttachments(Pipeline* pipeline) {
+vk::Extent2D VulkanRenderer::setupRenderingAttachments(Pipeline* pipeline, bool& has_depth) {
     // ---- Setup render targets ----
     // We need to do this BEFORE uploading textures below, because that function relies on
     // getVulkanAttachmentForColorTarget to set a flag to detect feedback loops.
@@ -432,13 +432,14 @@ vk::Extent2D VulkanRenderer::setupRenderingAttachments(Pipeline* pipeline) {
     getDepthTarget(&new_depth_rt, stencil_only);
 
     const bool depth_enabled = pipeline->cfg.depth_control.depth_enable && new_depth_rt.z_info.format != (u32)DataFormat::FormatInvalid;
+    has_depth = depth_enabled;
 
     // Check if any color or depth target was changed
     vk::Extent2D extent = { 0xffffffff, 0xffffffff };
     if (((regs[Reg::mmCB_COLOR_CONTROL] >> 4) & 3) != 0) {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 1; i++) {   // TODO: Stubbed to 1 color target
             if (new_rt[i].enabled) {
-                if (color_rt_dim[i].width < extent.width)   extent.width = color_rt_dim[i].width;
+                if (color_rt_dim[i].width  < extent.width)  extent.width  = color_rt_dim[i].width;
                 if (color_rt_dim[i].height < extent.height) extent.height = color_rt_dim[i].height;
 
                 if (last_color_rt[i] != new_rt[i]) {
@@ -475,7 +476,7 @@ vk::Extent2D VulkanRenderer::setupRenderingAttachments(Pipeline* pipeline) {
     }
 
     if (depth_enabled) {
-        if (depth_rt_dim.width < extent.width)  extent.width = depth_rt_dim.width;
+        if (depth_rt_dim.width  < extent.width)  extent.width  = depth_rt_dim.width;
         if (depth_rt_dim.height < extent.height) extent.height = depth_rt_dim.height;
 
         if (last_depth_rt != new_depth_rt
@@ -538,7 +539,8 @@ void VulkanRenderer::draw(const u64 cnt, const void* idx_buf_ptr) {
     }
 
     // Setup rendering attachments
-    auto extent = setupRenderingAttachments(&pipeline);
+    bool has_depth = false;
+    auto extent = setupRenderingAttachments(&pipeline, has_depth);
 
     // Gather vertex data
     auto* vtx_bindings = pipeline.gatherVertices();
@@ -561,7 +563,7 @@ void VulkanRenderer::draw(const u64 cnt, const void* idx_buf_ptr) {
             .layerCount = 1,
             .colorAttachmentCount = (u32)curr_attachments.size(),
             .pColorAttachments = curr_attachments.size() ? curr_attachments.data() : nullptr,
-            .pDepthAttachment = pipeline.cfg.depth_control.depth_enable ? &depth_attachment.vk_attachment : nullptr,
+            .pDepthAttachment = has_depth ? &depth_attachment.vk_attachment : nullptr,
             .pStencilAttachment = pipeline.cfg.depth_control.stencil_enable ? &depth_attachment.vk_attachment : nullptr
         };
 
@@ -649,7 +651,8 @@ void VulkanRenderer::drawIndirect(const u64 cnt, const bool is_indexed, void* dr
     auto [param_buf, param_buf_offs, was_dirty] = Cache::getBuffer(draw_args, cnt * sizeof(vk::DrawIndexedIndirectCommand));  // TODO: Don't stub to this struct when we implement other types of indirect draws
 
     // Setup rendering attachments
-    auto extent = setupRenderingAttachments(&pipeline);
+    bool has_depth = false;
+    auto extent = setupRenderingAttachments(&pipeline, has_depth);
 
     // Gather vertex data
     auto* vtx_bindings = pipeline.gatherVertices();
@@ -670,7 +673,7 @@ void VulkanRenderer::drawIndirect(const u64 cnt, const bool is_indexed, void* dr
             .layerCount = 1,
             .colorAttachmentCount = (u32)curr_attachments.size(),
             .pColorAttachments = curr_attachments.size() ? curr_attachments.data() : nullptr,
-            .pDepthAttachment = pipeline.cfg.depth_control.depth_enable ? &depth_attachment.vk_attachment : nullptr,
+            .pDepthAttachment = has_depth ? &depth_attachment.vk_attachment : nullptr,
             .pStencilAttachment = pipeline.cfg.depth_control.stencil_enable ? &depth_attachment.vk_attachment : nullptr
         };
 
@@ -730,7 +733,7 @@ static bool fullscreen = false;
 static bool force_recreate_swapchain = false;
 void VulkanRenderer::flip(OS::Libs::SceVideoOut::SceVideoOutBuffer* buf) {
     endRendering();
-
+    
     std::memset(last_color_rt, 0, sizeof(ColorTarget) * 8);
     last_depth_rt = {};
 

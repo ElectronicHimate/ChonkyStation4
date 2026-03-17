@@ -28,6 +28,7 @@ s32 PS4_FUNC sceGnmSubmitDone();
 s32 PS4_FUNC sceGnmAddEqEvent(Libs::Kernel::SceKernelEqueue eq, u64 id, void* udata);
 s32 PS4_FUNC sceGnmMapComputeQueue(u32 pipe_id, u32 queue_id, void* ring_base_addr, u32 ring_size_dw, u32* read_ptr_addr);
 s32 PS4_FUNC sceGnmDingDong(u32 queue_id, u32 next_offs_dw);
+void* PS4_FUNC sceGnmGetTheTessellationFactorRingBufferBaseAddress();
 s32 PS4_FUNC sceGnmDrawInitDefaultHardwareState(u32* buf, u32 size);
 s32 PS4_FUNC sceGnmDrawInitDefaultHardwareState200(u32* buf, u32 size);
 s32 PS4_FUNC sceGnmDrawInitDefaultHardwareState350(u32* buf, u32 size);

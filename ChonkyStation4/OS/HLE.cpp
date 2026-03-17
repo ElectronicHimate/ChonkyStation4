@@ -17,6 +17,7 @@
 #include <OS/Libraries/SceNet/SceNet.hpp>
 #include <OS/Libraries/SceRandom/SceRandom.hpp>
 #include <OS/Libraries/SceVideodec/SceVideodec.hpp>
+#include <OS/Libraries/SceAjm/SceAjm.hpp>
 
 
 // Stub until we implement audio input
@@ -56,6 +57,7 @@ std::shared_ptr<Module> buildHLEModule() {
     PS4::OS::Libs::SceNet::init(*module);
     PS4::OS::Libs::SceRandom::init(*module);
     PS4::OS::Libs::SceVideodec::init(*module);
+    PS4::OS::Libs::SceAjm::init(*module);
 
     // libSceAppContent
     module->addSymbolStub("R9lA82OraNs", "sceAppContentInitialize", "libSceAppContent", "libSceAppContentUtil");
@@ -81,6 +83,11 @@ std::shared_ptr<Module> buildHLEModule() {
     module->addSymbolStub("Lr8ovHH9l6A", "sceMsgDialogGetResult", "libSceMsgDialog", "libSceMsgDialog");
     module->addSymbolStub("HTrcDKlFKuM", "sceMsgDialogClose", "libSceMsgDialog", "libSceMsgDialog");
     module->addSymbolStub("ePw-kqZmelo", "sceMsgDialogTerminate", "libSceMsgDialog", "libSceMsgDialog");
+    
+    // libSceLoginDialog
+    module->addSymbolStub("2rc+egSfb5A", "sceLoginDialogUpdateStatus", "libSceLoginDialog", "libSceLoginDialog", 3);
+    module->addSymbolStub("Btkx21f1M8k", "sceLoginDialogGetResult", "libSceLoginDialog", "libSceLoginDialog");
+    module->addSymbolStub("vMQJRUKsf3U", "sceLoginDialogTerminate", "libSceLoginDialog", "libSceLoginDialog");
 
     // libSceCommonDialog
     module->addSymbolStub("uoUpLGNkygk", "sceCommonDialogInitialize", "libSceCommonDialog", "libSceCommonDialog");
@@ -108,7 +115,10 @@ std::shared_ptr<Module> buildHLEModule() {
     module->addSymbolStub("WWiGuh9XfgQ", "sceErrorDialogUpdateStatus", "libSceErrorDialog", "libSceErrorDialog", 0);
     
     // libSceNpProfileDialog
-    module->addSymbolStub("Lg+NCE6pTwQ", "sceNpProfileDialogInitialize", "libSceNpProfileDialog", "libSceNpProfileDialog", 0);
+    module->addSymbolStub("Lg+NCE6pTwQ", "sceNpProfileDialogInitialize", "libSceNpProfileDialog", "libSceNpProfileDialog");
+    module->addSymbolStub("haVZE9FgKqE", "sceNpProfileDialogUpdateStatus", "libSceNpProfileDialog", "libSceNpProfileDialog", 3);
+    module->addSymbolStub("8rhLl1-0W-o", "sceNpProfileDialogGetResult", "libSceNpProfileDialog", "libSceNpProfileDialog");
+    module->addSymbolStub("0Sp9vJcB1-w", "sceNpProfileDialogTerminate", "libSceNpProfileDialog", "libSceNpProfileDialog");
     
     // libSceInvitationDialog
     module->addSymbolStub("9+g9iOq+7kg", "sceInvitationDialogUpdateStatus", "libSceInvitationDialog", "libSceInvitationDialog", 0);
@@ -171,6 +181,7 @@ std::shared_ptr<Module> buildHLEModule() {
     module->addSymbolStub("aCYPMSUIaP8", "sceHttpGetAllResponseHeaders", "libSceHttp", "libSceHttp");
     module->addSymbolStub("yuO2H2Uvnos", "sceHttpGetResponseContentLength", "libSceHttp", "libSceHttp");
     module->addSymbolStub("P5pdoykPYTk", "sceHttpReadData", "libSceHttp", "libSceHttp");
+    module->addSymbolStub("qISjDHrxONc", "sceHttpWaitRequest", "libSceHttp", "libSceHttp");
     module->addSymbolStub("4I8vEpuEhZ8", "sceHttpDeleteTemplate", "libSceHttp", "libSceHttp");
     module->addSymbolStub("Ik-KpLTlf7Q", "sceHttpTerm", "libSceHttp", "libSceHttp");
     
@@ -232,17 +243,6 @@ std::shared_ptr<Module> buildHLEModule() {
     module->addSymbolStub("k1SwgkMSOM8", "sceRemoteplayInitialize", "libSceRemoteplay", "libSceRemoteplay");
     module->addSymbolStub("xQeIryTX7dY", "sceRemoteplayApprove", "libSceRemoteplay", "libSceRemoteplay");
     module->addSymbolStub("g3PNjYKWqnQ", "sceRemoteplayGetConnectionStatus", "libSceRemoteplay", "libSceRemoteplay");
-    
-    // libSceAjm
-    module->addSymbolStub("dl+4eHSzUu4", "sceAjmInitialize", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("Q3dyFuwGn64", "sceAjmModuleRegister", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("Wi7DtlLV+KI", "sceAjmModuleUnregister", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("AxoDrINp4J8", "sceAjmInstanceCreate", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("dmDybN--Fn8", "sceAjmBatchJobControlBufferRa", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("7jdAXK+2fMo", "sceAjmBatchJobRunSplitBufferRa", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("fFFkk0xfGWs", "sceAjmBatchStartBuffer", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("-qLsfDAywIY", "sceAjmBatchWait", "libSceAjm", "libSceAjm");
-    module->addSymbolStub("eDFeTyi+G3Y", "sceAjmDecMp3ParseFrame", "libSceAjm", "libSceAjm");
     
     // libSceIme
     module->addSymbolStub("eaFXjfJv3xs", "sceImeKeyboardOpen", "libSceIme", "libSceIme");

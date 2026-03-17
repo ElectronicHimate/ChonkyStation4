@@ -127,6 +127,8 @@ void init(Module& module) {
     module.addSymbolExport("geDaqgH9lTg", "scePthreadKeyCreate", "libkernel", "libkernel", (void*)&kernel_pthread_key_create);
     module.addSymbolExport("OxhIB8LB-PQ", "pthread_create", "libkernel", "libkernel", (void*)&kernel_pthread_create);
     module.addSymbolExport("OxhIB8LB-PQ", "pthread_create", "libScePosix", "libkernel", (void*)&kernel_pthread_create);
+    module.addSymbolExport("Jmi+9w9u0E4", "pthread_create_name_np", "libkernel", "libkernel", (void*)&scePthreadCreate);
+    module.addSymbolExport("Jmi+9w9u0E4", "pthread_create_name_np", "libScePosix", "libkernel", (void*)&scePthreadCreate);
     module.addSymbolExport("6UgtwV+0zb4", "scePthreadCreate", "libkernel", "libkernel", (void*)&scePthreadCreate);
     module.addSymbolExport("GBUY7ywdULE", "scePthreadRename", "libkernel", "libkernel", (void*)&scePthreadRename);
     module.addSymbolExport("+U1R4WtXvoc", "pthread_detach", "libkernel", "libkernel", (void*)&kernel_pthread_detach);
@@ -272,6 +274,7 @@ void init(Module& module) {
     module.addSymbolExport("cQke9UuBQOk", "sceKernelMunmap", "libkernel", "libkernel", (void*)&sceKernelMunmap);
     module.addSymbolExport("pO96TwzOm5E", "sceKernelGetDirectMemorySize", "libkernel", "libkernel", (void*)&sceKernelGetDirectMemorySize);
     module.addSymbolExport("rVjRvHJ0X6c", "sceKernelVirtualQuery", "libkernel", "libkernel", (void*)&sceKernelVirtualQuery);
+    module.addSymbolExport("WFcfL2lzido", "sceKernelQueryMemoryProtection", "libkernel", "libkernel", (void*)&sceKernelQueryMemoryProtection);
     module.addSymbolExport("BPE9s9vQQXo", "mmap", "libkernel", "libkernel", (void*)&kernel_mmap);
     module.addSymbolExport("BPE9s9vQQXo", "mmap", "libScePosix", "libkernel", (void*)&kernel_mmap);
     
@@ -746,6 +749,18 @@ s32 PS4_FUNC sceKernelVirtualQuery(const void* addr, s32 flags, SceKernelVirtual
     Helpers::panic("Unsupported platform\n");
 #endif
 
+    return SCE_OK;
+}
+
+s32 PS4_FUNC sceKernelQueryMemoryProtection(void* addr, void** start, void** end, s32* prot) {
+    log("sceKernelQueryMemoryProtection(addr=%p, start=*%p, end=*%p, prot=*%p)\n", addr, start, end, prot);
+    
+    if (start || end) {
+        Helpers::panic("TODO: sceKernelQueryMemoryProtection with start/end");
+    }
+
+    // TODO: Stubbed
+    *prot = 0x2 | 0x4 | 0x30;   // CPU RWX + GPU RW
     return SCE_OK;
 }
 

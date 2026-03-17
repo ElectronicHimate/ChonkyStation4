@@ -16,6 +16,7 @@ void init(Module& module) {
     module.addSymbolExport("b0xyllnVY-I", "sceGnmAddEqEvent", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmAddEqEvent);
     module.addSymbolExport("29oKvKXzEZo", "sceGnmMapComputeQueue", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmMapComputeQueue);
     module.addSymbolExport("bX5IbRvECXk", "sceGnmDingDong", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmDingDong);
+    module.addSymbolExport("ln33zjBrfjk", "sceGnmGetTheTessellationFactorRingBufferBaseAddress", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmGetTheTessellationFactorRingBufferBaseAddress);
     //module.addSymbolExport("Idffwf3yh8s", "sceGnmDrawInitDefaultHardwareState", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmDrawInitDefaultHardwareState);
     //module.addSymbolExport("0H2vBYbTLHI", "sceGnmDrawInitDefaultHardwareState200", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmDrawInitDefaultHardwareState200);
     //module.addSymbolExport("yb2cRhagD1I", "sceGnmDrawInitDefaultHardwareState350", "libSceGnmDriver", "libSceGnmDriver", (void*)&sceGnmDrawInitDefaultHardwareState350);
@@ -66,6 +67,8 @@ void init(Module& module) {
     module.addSymbolForPartialLLE("NfvOrNzy6sk", "sceGnmInsertDingDongMarker", "libSceGnmDriver", "libSceGnmDriver");
     module.addSymbolForPartialLLE("jg33rEKLfVs", "sceGnmIsUserPaEnabled", "libSceGnmDriver", "libSceGnmDriver");
     module.addSymbolForPartialLLE("cFCp0NX8wf0", "sceGnmSetVgtControl", "libSceGnmDriver", "libSceGnmDriver");
+    module.addSymbolForPartialLLE("ZFqKFl23aMc", "sceGnmRegisterOwner", "libSceGnmDriver", "libSceGnmDriver");
+    module.addSymbolForPartialLLE("iCO804ZgzdA", "sceGnmValidateCommandBuffers", "libSceGnmDriver", "libSceGnmDriver");
     
     module.addSymbolStub("iBt3Oe00Kvc", "sceGnmFlushGarlic", "libSceGnmDriver", "libSceGnmDriver");
     module.addSymbolStub("PVT+fuoS9gU", "sceGnmDeleteEqEvent", "libSceGnmDriver", "libSceGnmDriver");
@@ -151,6 +154,13 @@ s32 PS4_FUNC sceGnmDingDong(u32 queue_id, u32 next_offs_dw) {
     // Now that we have the command buffer base and size, submit it to the graphics thread
     GCN::submitCompute((u32*)cmd_buf_ptr, cmd_buf_size_dw * sizeof(u32), &queue);
     return SCE_OK;
+}
+
+void* PS4_FUNC sceGnmGetTheTessellationFactorRingBufferBaseAddress() {
+    log("sceGnmGetTheTessellationFactorRingBufferBaseAddress()\n");
+
+    // TODO: No idea what this is yet. Return an address in the system reserved area - the game is going to map memory there after this.
+    return (void*)0xff'0000'0000;
 }
 
 s32 PS4_FUNC sceGnmDrawInitDefaultHardwareState(u32* buf, u32 size) {

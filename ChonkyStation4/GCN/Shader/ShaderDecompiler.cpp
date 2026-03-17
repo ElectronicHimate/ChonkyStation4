@@ -446,15 +446,25 @@ uint getStrideForBinding(uint binding) {
         case Shader::Opcode::S_LOAD_DWORDX4: {
             const auto sgpr_pair = instr.src[0].code * 2;
             const auto dest_pair = instr.dst[0].code;
-            descs[dest_pair] = { sgpr_pair, instr.control.smrd.offset, true };
+            descs[dest_pair]     = { sgpr_pair, instr.control.smrd.offset, true };
             break;
         }
 
         case Shader::Opcode::S_LOAD_DWORDX8: {
             const auto sgpr_pair = instr.src[0].code * 2;
             const auto dest_pair = instr.dst[0].code;
-            descs[dest_pair]        = { sgpr_pair, instr.control.smrd.offset, true };
-            descs[dest_pair + 4]    = { sgpr_pair, instr.control.smrd.offset, true };
+            descs[dest_pair + 0] = { sgpr_pair, instr.control.smrd.offset + 0u, true };
+            descs[dest_pair + 4] = { sgpr_pair, instr.control.smrd.offset + 4u, true };
+            break;
+        }
+
+        case Shader::Opcode::S_LOAD_DWORDX16: {
+            const auto sgpr_pair  = instr.src[0].code * 2;
+            const auto dest_pair  = instr.dst[0].code;
+            descs[dest_pair +  0] = { sgpr_pair, instr.control.smrd.offset +  0u, true };
+            descs[dest_pair +  4] = { sgpr_pair, instr.control.smrd.offset +  4u, true };
+            descs[dest_pair +  8] = { sgpr_pair, instr.control.smrd.offset +  8u, true };
+            descs[dest_pair + 12] = { sgpr_pair, instr.control.smrd.offset + 12u, true };
             break;
         }
 
@@ -710,9 +720,21 @@ uint getStrideForBinding(uint binding) {
             main += std::format("scc = uint({} != 0);\n", getSRC<Type::Uint>(instr.dst[0]));
             break;
         }
+        
+        case Shader::Opcode::S_XOR_B64: {
+            main += setDST<Type::Uint>(instr.dst[0], std::format("{} ^ {}", getSRC<Type::Uint>(instr.src[0]), getSRC<Type::Uint>(instr.src[1])));
+            main += std::format("scc = uint({} != 0);\n", getSRC<Type::Uint>(instr.dst[0]));
+            break;
+        }
 
         case Shader::Opcode::S_ANDN2_B64: {
             main += setDST<Type::Uint>(instr.dst[0], std::format("{} & ~{}", getSRC<Type::Uint>(instr.src[0]), getSRC<Type::Uint>(instr.src[1])));
+            main += std::format("scc = uint({} != 0);\n", getSRC<Type::Uint>(instr.dst[0]));
+            break;
+        }
+        
+        case Shader::Opcode::S_NAND_B64: {
+            main += setDST<Type::Uint>(instr.dst[0], std::format("~({} & {})", getSRC<Type::Uint>(instr.src[0]), getSRC<Type::Uint>(instr.src[1])));
             main += std::format("scc = uint({} != 0);\n", getSRC<Type::Uint>(instr.dst[0]));
             break;
         }
@@ -783,6 +805,11 @@ uint getStrideForBinding(uint binding) {
 
         case Shader::Opcode::S_CMP_EQ_I32: {
             main += std::format("scc = uint({} == {});\n", getSRC<Type::Int>(instr.src[0]), getSRC<Type::Int>(instr.src[1]));
+            break;
+        }
+        
+        case Shader::Opcode::S_CMP_LG_I32: {
+            main += std::format("scc = uint({} != {});\n", getSRC<Type::Int>(instr.src[0]), getSRC<Type::Int>(instr.src[1]));
             break;
         }
         
@@ -1013,6 +1040,11 @@ uint getStrideForBinding(uint binding) {
             main += setDST(instr.dst[0], std::format("max({}, {})", getSRC(instr.src[0]), getSRC(instr.src[1])));
             break;
         }
+        
+        case Shader::Opcode::V_MAX_I32: {
+            main += setDST<Type::Int>(instr.dst[0], std::format("max({}, {})", getSRC<Type::Int>(instr.src[0]), getSRC<Type::Int>(instr.src[1])));
+            break;
+        }
 
         case Shader::Opcode::V_LSHRREV_B32: {
             main += setDST<Type::Uint>(instr.dst[0], std::format("{} >> ({} & 0x1f)", getSRC<Type::Uint>(instr.src[1]), getSRC<Type::Uint>(instr.src[0])));
@@ -1149,6 +1181,11 @@ uint getStrideForBinding(uint binding) {
             break;
         }
 
+        case Shader::Opcode::V_RSQ_CLAMP_F32: {
+            main += setDST(instr.dst[0], std::format("clamp(1.0f / sqrt({}), -3.402823466e+38f, +3.402823466e+38f)", getSRC(instr.src[0])));
+            break;
+        }
+        
         case Shader::Opcode::V_RSQ_F32: {
             main += setDST(instr.dst[0], std::format("1.0f / sqrt({})", getSRC(instr.src[0])));
             break;
@@ -1275,12 +1312,17 @@ uint getStrideForBinding(uint binding) {
         }
 
         case Shader::Opcode::S_LOAD_DWORDX4: {
-            main += "// TODO: S_LOAD_DWORDX4 dest: " + std::to_string(instr.dst[0].code) + "\n";
+            main += "// TODO: S_LOAD_DWORDX4 dest: " + std::to_string(instr.dst[0].code) + " offs: " + std::to_string(instr.control.smrd.offset) + "\n";
             break;
         }
 
         case Shader::Opcode::S_LOAD_DWORDX8: {
-            main += "// TODO: S_LOAD_DWORDX8 dest: " + std::to_string(instr.dst[0].code) + "\n";
+            main += "// TODO: S_LOAD_DWORDX8 dest: " + std::to_string(instr.dst[0].code) + " offs: " + std::to_string(instr.control.smrd.offset) + "\n";
+            break;
+        }
+
+        case Shader::Opcode::S_LOAD_DWORDX16: {
+            main += "// TODO: S_LOAD_DWORDX16 dest: " + std::to_string(instr.dst[0].code) + " offs: " + std::to_string(instr.control.smrd.offset) + "\n";
             break;
         }
 
@@ -1413,10 +1455,28 @@ uint getStrideForBinding(uint binding) {
             Helpers::debugAssert(buffer_map.contains(buffer_mapping), "IMAGE_SAMPLE: no buffer_mapping");  // Unreachable if everything works as intended
             auto* buf = buffer_map[buffer_mapping];
 
-            main += std::format("// T# is in s{}\n", instr.src[2].code * 4);
 
             const auto sampler_name = std::format("tex{}", buf->binding);
-            const std::string texcoords = std::format("vec2(u2f({}), u2f({}))", getVGPR(instr.src[0].code), getVGPR(instr.src[0].code + 1));
+            
+            // There index of the texcoord register varies depending on the image flags.
+            // TODO: Use the decoder's image flags
+            int coord_reg_idx = instr.src[0].code;
+            switch (instr.opcode) {
+            case Shader::Opcode::IMAGE_SAMPLE_C:
+            case Shader::Opcode::IMAGE_SAMPLE_C_LZ:
+            case Shader::Opcode::IMAGE_SAMPLE_O:
+            case Shader::Opcode::IMAGE_SAMPLE_LZ_O: {
+                coord_reg_idx++;
+                break;
+            }
+            case Shader::Opcode::IMAGE_SAMPLE_C_LZ_O: {
+                coord_reg_idx += 2;
+                break;
+            }
+            }
+
+            const std::string texcoords = std::format("vec2(u2f({}), u2f({}))", getVGPR(coord_reg_idx), getVGPR(coord_reg_idx + 1));
+            main += std::format("// T# is in s{}\n", instr.src[2].code * 4);
             main += std::format("tmp = texture({}, {});\n", sampler_name, texcoords);
             main += "tmp2 = float[](tmp.x, tmp.y, tmp.z, tmp.w);\n";
 

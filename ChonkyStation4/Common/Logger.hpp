@@ -87,6 +87,7 @@ static Logger lib_sceRtc            = Logger<true> ("[Lib    ][SceRtc           
 static Logger lib_sceNet            = Logger<true> ("[Lib    ][SceNet           ] ");
 static Logger lib_sceRandom         = Logger<true> ("[Lib    ][SceRandom        ] ");
 static Logger lib_sceVideodec       = Logger<true> ("[Lib    ][SceVideodec      ] ");
+static Logger lib_sceAjm            = Logger<true> ("[Lib    ][SceAjm           ] ");
 
 // GCN
 static Logger gcn_command_processor = Logger<false>("[GCN    ][Command          ] ");

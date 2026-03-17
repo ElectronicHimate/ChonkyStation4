@@ -214,7 +214,7 @@ public:
         }
 
         if (regs[Reg::mmDB_STENCIL_READ_BASE] != regs[Reg::mmDB_STENCIL_WRITE_BASE]) {
-            Helpers::panic("TODO: DB_STENCIL_READ_BASE != DB_STENCIL_WRITE_BASE");
+            //Helpers::panic("TODO: DB_STENCIL_READ_BASE != DB_STENCIL_WRITE_BASE");
         }
 
         if (regs[Reg::mmDB_Z_READ_BASE] != regs[Reg::mmDB_STENCIL_READ_BASE]) {

@@ -24,7 +24,7 @@ struct SceVideodecConfigInfo {
 };
 
 struct SceVideodecResourceInfo {
-    size_t thisSize;
+    size_t this_size;
     size_t cpu_mem_size;
     void* cpu_mem;
     size_t cpu_gpu_mem_size;
