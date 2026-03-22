@@ -71,9 +71,7 @@ target_sources(ChonkyStation4 PRIVATE
 option(ZYDIS_BUILD_TOOLS "" OFF)
 option(ZYDIS_BUILD_EXAMPLES "" OFF)
 add_subdirectory(Dependencies/zydis)
-if(WIN32)
-    add_subdirectory(Dependencies/pthread-win32)
-endif()
+add_subdirectory(Dependencies/pthread-win32)
 add_subdirectory(Dependencies/SDL)
 add_subdirectory(Dependencies/xxHash/cmake_unofficial EXCLUDE_FROM_ALL)
 
