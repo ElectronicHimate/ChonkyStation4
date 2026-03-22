@@ -12,7 +12,6 @@ endif()
 add_compile_definitions(SDL_MAIN_HANDLED)
 
 add_executable(ChonkyStation4)
-add_compile_definitions("_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR")
 
 set(VERSION_STRING "alpha-1")
 
