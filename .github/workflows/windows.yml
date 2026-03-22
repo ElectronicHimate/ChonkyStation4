@@ -28,12 +28,12 @@ jobs:
         vulkan-use-cache: true
 
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_USER_BUILD=ON
-
+      run: cmake -S . -B artifacts -G "Visual Studio 17 2022" -A x64
+      
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
+      run: cmake --build artifacts --config Release
+      
     - name: Upload Executable
       uses: actions/upload-artifact@v4
       with:
