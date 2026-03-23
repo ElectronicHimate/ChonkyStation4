@@ -83,8 +83,8 @@ add_subdirectory(Dependencies/glslang)
 
 target_include_directories(ChonkyStation4 PUBLIC 
     Dependencies/glslang
-    Dependencies/glslang/glslang/Public
-    Dependencies/glslang/SPIRV
+    ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/glslang/External 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies 
 )
 
 target_include_directories(ChonkyStation4 PUBLIC ChonkyStation4)
