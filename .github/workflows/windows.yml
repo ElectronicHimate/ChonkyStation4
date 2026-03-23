@@ -35,7 +35,7 @@ jobs:
 
       - name: Configure and Build
         run: |
-          cmake -S . -B build -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+          cmake -S . -B build -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DHAVE_CONFIG_H
           cmake --build build
 
       - name: Upload Executable
