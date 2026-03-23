@@ -39,7 +39,7 @@ jobs:
       - name: Build
         shell: msys2 {0}
         run: |
-          cmake -S . -B build -G "Ninja"
+          cmake -S . -B build -G "Ninja" -DDoxygen_EXECUTABLE=OFF -DPTHREAD_VERSION=2.10.0
           cmake --build build
 
       - name: Upload Executable
