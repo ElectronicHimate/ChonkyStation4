@@ -93,8 +93,6 @@ target_link_options(ChonkyStation4 PRIVATE /BASE:0x700000000000)
         
 target_link_options(ChonkyStation4 PRIVATE /STACK:0x200000,0x200000)
 
-target_link_libraries(ChonkyStation4 PRIVATE Ws2_32 pthreads4w)
-
 # Vulkan
 find_package(Vulkan REQUIRED)
 target_compile_definitions(ChonkyStation4 PUBLIC
