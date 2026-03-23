@@ -9,6 +9,7 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+add_definitions(-DHAVE_CONFIG_H)
 add_compile_definitions(SDL_MAIN_HANDLED)
 
 add_executable(ChonkyStation4)
@@ -110,6 +111,10 @@ if(WIN32)
     target_link_libraries(ChonkyStation4 PRIVATE Ws2_32 pthreadVC3)
 endif()
 target_link_libraries(ChonkyStation4 PRIVATE Zydis SDL2-static xxHash::xxhash)
+
+if(TARGET pthreadVC3)
+    target_compile_definitions(pthreadVC3 PUBLIC HAVE_CONFIG_H)
+endif()
 
 # Vulkan
 find_package(Vulkan REQUIRED)
