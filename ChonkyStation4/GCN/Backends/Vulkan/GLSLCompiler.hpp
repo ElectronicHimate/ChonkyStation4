@@ -4,7 +4,7 @@
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/Public/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
-#include <glslang/SPIRV/SpvTools.h>
+#include <SPIRV/SpvTools.h>
 
 namespace PS4::GCN {
 
