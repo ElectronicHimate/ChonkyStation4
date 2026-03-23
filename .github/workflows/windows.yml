@@ -30,23 +30,13 @@ jobs:
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
         
-      - name: Setup MSYS2
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+      - name: Install LLVM
+        run: choco install llvm -y
 
-      - name: Build
-        shell: msys2 {0}
+      - name: Configure and Build
         run: |
-          cmake -S . -B build -G "Ninja" \
-          -DDOXYGEN_EXECUTABLE=OFF \
-          -DPTHREAD_VERSION_STR="2.10.0" \
-          -DPTHREAD_VERSION_MAJOR=2 \
-          -DPTHREAD_VERSION_MINOR=10 \
-          -DPTHREAD_VERSION_PATCH=0          
+          cmake -S . -B build -G "Ninja" -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DHAVE_CONFIG_H=ON
           cmake --build build
-
       - name: Upload Executable
         uses: actions/upload-artifact@v4
         with:
