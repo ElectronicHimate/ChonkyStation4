@@ -41,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ChonkyStation4 
-          path: /build/**/ChonkyStation4.exe
+          path: build/**/ChonkyStation4.exe
