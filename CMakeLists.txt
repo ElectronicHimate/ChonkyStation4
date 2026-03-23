@@ -12,6 +12,7 @@ endif()
 add_compile_definitions(SDL_MAIN_HANDLED)
 
 add_executable(ChonkyStation4)
+add_compile_definitions("_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR")
 
 set(VERSION_STRING "alpha-1")
 
@@ -70,7 +71,9 @@ target_sources(ChonkyStation4 PRIVATE
 option(ZYDIS_BUILD_TOOLS "" OFF)
 option(ZYDIS_BUILD_EXAMPLES "" OFF)
 add_subdirectory(Dependencies/zydis)
-add_subdirectory(Dependencies/pthread-win32)
+if(WIN32)
+    add_subdirectory(Dependencies/pthread-win32)
+endif()
 add_subdirectory(Dependencies/SDL)
 add_subdirectory(Dependencies/xxHash/cmake_unofficial EXCLUDE_FROM_ALL)
 
@@ -82,19 +85,30 @@ target_include_directories(ChonkyStation4 PUBLIC ChonkyStation4/Common)
 
 target_include_directories(ChonkyStation4 PUBLIC Dependencies/ELFIO)
 target_include_directories(ChonkyStation4 PUBLIC Dependencies/xbyak)
-target_include_directories(ChonkyStation4 PUBLIC Dependencies/pthread-win32)
+if(WIN32)
+    target_include_directories(ChonkyStation4 PUBLIC Dependencies/pthread-win32)
+endif()
 target_include_directories(ChonkyStation4 PUBLIC Dependencies/Dolphin)
 target_include_directories(ChonkyStation4 PUBLIC ${SDL2_INCLUDE_DIR})
 target_include_directories(ChonkyStation4 PUBLIC Dependencies/xxHash)
 
-target_link_options(ChonkyStation4 PRIVATE /DYNAMICBASE:NO)
-    
-target_link_options(ChonkyStation4 PRIVATE /BASE:0x700000000000)
-        
-target_link_options(ChonkyStation4 PRIVATE /STACK:0x200000,0x200000)
+if (WIN32)
+    if (MSVC)
+        target_link_options(ChonkyStation4 PRIVATE /DYNAMICBASE:NO)
+        target_link_options(ChonkyStation4 PRIVATE /BASE:0x700000000000)
+        target_link_options(ChonkyStation4 PRIVATE /STACK:0x200000,0x200000)
+    else()
+        target_link_options(ChonkyStation4 PRIVATE -Wl,--disable-dynamicbase)
+        target_link_options(ChonkyStation4 PRIVATE -Wl,--image-base=0x700000000000)
+        target_link_options(ChonkyStation4 PRIVATE -Wl,--stack,2097152)
+    endif()
+else()
+    target_link_options(ChonkyStation4 PRIVATE -Wl,--image-base=0x700000000000)
+endif()
 
-target_link_libraries(ChonkyStation4 PRIVATE Ws2_32 pthreadVC3)
-
+if(WIN32)
+    target_link_libraries(ChonkyStation4 PRIVATE Ws2_32 pthreadVC3)
+endif()
 target_link_libraries(ChonkyStation4 PRIVATE Zydis SDL2-static xxHash::xxhash)
 
 # Vulkan
