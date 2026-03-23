@@ -3,9 +3,8 @@
 #include <Common.hpp>
 #include <glslang/Public/ShaderLang.h>
 #include <glslang/Public/ResourceLimits.h>
-#include <glslang/SPIRV/GlslangToSpv.h>
+#include <SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/SpvTools.h>
-
 
 namespace PS4::GCN {
 
