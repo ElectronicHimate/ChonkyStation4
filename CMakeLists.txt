@@ -81,6 +81,12 @@ add_subdirectory(Dependencies/xxHash/cmake_unofficial EXCLUDE_FROM_ALL)
 set(ENABLE_OPT OFF CACHE BOOL "" FORCE)
 add_subdirectory(Dependencies/glslang)
 
+target_include_directories(ChonkyStation4 PUBLIC 
+    Dependencies/glslang
+    Dependencies/glslang/glslang/Public
+    Dependencies/glslang/SPIRV
+)
+
 target_include_directories(ChonkyStation4 PUBLIC ChonkyStation4)
 target_include_directories(ChonkyStation4 PUBLIC ChonkyStation4/Common)
 
