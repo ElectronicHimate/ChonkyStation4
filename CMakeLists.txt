@@ -24,11 +24,7 @@ if (ENABLE_USER_BUILD)
     target_compile_definitions(ChonkyStation4 PRIVATE CHONKYSTATION4_USER_BUILD)
 endif()
 
-if (ENABLE_RELEASE_BUILD)
-    target_compile_definitions(ChonkyStation4 PRIVATE CHONKYSTATION4_VERSION="${VERSION_STRING}")
-else()
-    target_compile_definitions(ChonkyStation4 PRIVATE CHONKYSTATION4_VERSION="dev")
-endif()
+target_compile_definitions(ChonkyStation4 PRIVATE CHONKYSTATION4_VERSION="dev")
 
 target_sources(ChonkyStation4 PRIVATE
 "ChonkyStation4/ChonkyStation4.cpp" "ChonkyStation4/PlayStation4.cpp" "ChonkyStation4/PlayStation4.hpp" "ChonkyStation4/Common/Common.hpp" "ChonkyStation4/Common/Logger.hpp" "ChonkyStation4/Loaders/ELF/ELFLoader.cpp"
