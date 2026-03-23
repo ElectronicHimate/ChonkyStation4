@@ -18,7 +18,7 @@ add_compile_definitions("_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR")
 set(VERSION_STRING "alpha-1")
 
 option(ENABLE_USER_BUILD "Enable user build" OFF)
-option(ENABLE_RELEASE_BUILD "Create a release build (do not use this)" OFF)
+option(ENABLE_RELEASE_BUILD "Create a release build (do not use this)" ON)
 
 if (ENABLE_USER_BUILD)
     target_compile_definitions(ChonkyStation4 PRIVATE CHONKYSTATION4_USER_BUILD)
